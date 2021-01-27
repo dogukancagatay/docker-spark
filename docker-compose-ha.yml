@@ -1,0 +1,112 @@
+version: "2.2"
+services:
+
+  zk:
+    image: zookeeper:3.6.2
+    environment:
+      ZOO_MY_ID: "1"
+      ZOO_SERVERS: "server.1=0.0.0.0:2888:3888;2181"
+      ZOO_ADMINSERVER_ENABLED: "false"
+      ZOO_STANDALONE_ENABLED: "true"
+      ZOO_MAX_CLIENT_CNXNS: "0"
+    ports:
+      - 2181:2181
+
+  m1:
+    image: dcagatay/docker-spark:2.4.7-hadoop3.2.2
+    hostname: m1
+    depends_on:
+      - zk
+    environment:
+      # MASTER: spark://m1:7077
+      ZK_HOSTS: "zk:2181"
+      SPARK_PUBLIC_DNS: localhost
+      # SPARK_PUBLIC_DNS: "m1"
+      # SPARK_LOCAL_HOSTNAME: "m1"
+    expose:
+      - 7077
+      - 8080
+    ports:
+      - 4040:4040
+      - 6066:6066
+      - 7077:7077
+      - 8080:8080
+    volumes:
+      - ./conf/master:/conf
+    #   - ./data:/tmp/data
+
+  m2:
+    image: dcagatay/docker-spark:2.4.7-hadoop3.2.2
+    hostname: m2
+    depends_on:
+      - zk
+    environment:
+      # MASTER: spark://m2:7077
+      ZK_HOSTS: "zk:2181"
+      SPARK_PUBLIC_DNS: localhost
+      # SPARK_PUBLIC_DNS: "m2"
+      # SPARK_LOCAL_HOSTNAME: "m2"
+    ports:
+      - 4041:4040
+      - 6067:6066
+      - 7078:7077
+      - 8090:8080
+
+  m3:
+    image: dcagatay/docker-spark:2.4.7-hadoop3.2.2
+    hostname: m3
+    depends_on:
+      - zk
+    environment:
+      # MASTER: spark://m3:7077
+      ZK_HOSTS: "zk:2181"
+      SPARK_PUBLIC_DNS: localhost
+      # SPARK_PUBLIC_DNS: "m3"
+      # SPARK_LOCAL_HOSTNAME: "m3"
+    ports:
+      - 4042:4040
+      - 6068:6066
+      - 7079:7077
+      - 8100:8080
+
+  w1:
+    image: dcagatay/docker-spark:2.4.7-hadoop3.2.2
+    hostname: w2
+    depends_on:
+      - m1
+      - m2
+      - m3
+    environment:
+      SPARK_MODE: "worker"
+      SPARK_MASTER_URI: "spark://m1:7077,m2:7077,m3:7077"
+      SPARK_WORKER_CORES: 2
+      SPARK_WORKER_MEMORY: 1g
+      SPARK_PUBLIC_DNS: localhost
+      # SPARK_PUBLIC_DNS: "w1"
+      # SPARK_LOCAL_HOSTNAME: "w1"
+    links:
+      - m1
+    ports:
+      - 8881:8881
+      - 8081:8081
+
+  w2:
+    image: dcagatay/docker-spark:2.4.7-hadoop3.2.2
+    hostname: w2
+    depends_on:
+      - m1
+      - m2
+      - m3
+    environment:
+      SPARK_MODE: "worker"
+      SPARK_MASTER_URI: "spark://m1:7077,m2:7077,m3:7077"
+      SPARK_WORKER_CORES: 2
+      SPARK_WORKER_MEMORY: 1g
+      SPARK_WORKER_PORT: 8882
+      SPARK_WORKER_WEBUI_PORT: 8082
+      SPARK_PUBLIC_DNS: localhost
+      # SPARK_PUBLIC_DNS: "w1"
+      # SPARK_LOCAL_HOSTNAME: "w1"
+    ports:
+      - 8882:8882
+      - 8082:8082

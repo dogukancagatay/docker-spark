@@ -1,39 +1,74 @@
-
-# spark
+# Apache Spark
 
 A `debian:stretch` based [Spark](http://spark.apache.org) container. Use it in a standalone cluster with the accompanying `docker-compose.yml`, or as a base for more complex recipes.
 
-## docker example
+## Labels
 
-To run `SparkPi`, run the image with Docker:
+- `latest`, `dcagatay/docker-spark:2.4.7-hadoop3.2.2`
 
-    docker run --rm -it -p 4040:4040 gettyimages/spark bin/run-example SparkPi 10
+## Highlights
 
-To start `spark-shell` with your AWS credentials:
+- Highly available standalone cluster compatible (Multiple masters, with zookeeper)
+- Highly configurable, configuration files are exposed
+- Extendable configuration, you can extend to have a Spark container for your application
+- Customizable versions, you can customize Hadoop and Spark versions inside Dockerfile according to your needs and rebuild your image
+- Multi server setup is possible
 
-    docker run --rm -it -e "AWS_ACCESS_KEY_ID=YOURKEY" -e "AWS_SECRET_ACCESS_KEY=YOURSECRET" -p 4040:4040 gettyimages/spark bin/spark-shell
+## Running
 
-To do a thing with Pyspark
+`docker-compose.yml` provides a single-master spark cluster, you can start the cluster via `docker-compose up -d`.
 
-    echo -e "import pyspark\n\nprint(pyspark.SparkContext().parallelize(range(0, 10)).count())" > count.py
-    docker run --rm -it -p 4040:4040 -v $(pwd)/count.py:/count.py gettyimages/spark bin/spark-submit /count.py
+You can find the highly available version at `docker-compose-ha.yml`.
 
-## docker-compose example
+### Configuration
 
-To create a simplistic standalone cluster with [docker-compose](http://docs.docker.com/compose):
+Traditional Spark configuration is possible, you can configure according to Spark configuration documentation.
 
-    docker-compose up
+In order to configure via `$SPARK_HOME/conf` directory, you should map `/conf` directory of container to a local one, and put your configuration inside that directory for master and worker separately. Note that, if the mapped directory is empty, it is self populated with templates and current configuration for convenience.
 
-The SparkUI will be running at `http://${YOUR_DOCKER_HOST}:8080` with one worker listed. To run `pyspark`, exec into a container:
+There are a couple of configuration extensions for increasing usability via environment variables.
 
-    docker exec -it docker-spark_master_1 /bin/bash
-    bin/pyspark
+- `SPARK_MODE`: (Required for worker) Running mode for the spark instance. Required for worker. ([`worker`, `master`], Default: `master`)
+- `SPARK_MASTER_URI`: (Required for worker) Tells worker nodes where which master to connect on startup. (e.g. `spark://m1:7077,spark://m2:7077`)
+- `ZK_HOSTS`: (Optional) For HA configuration, enables to set zookeeper hosts quickly.(e.g. `zk1:2181,zk2:2181,zk3:2181`)
 
-To run `SparkPi`, exec into a container:
+You can access more configuration options from [here](https://spark.apache.org/docs/2.4.7/configuration.html) and [here](https://spark.apache.org/docs/2.4.7/spark-standalone.html)
 
-    docker exec -it docker-spark_master_1 /bin/bash
-    bin/run-example SparkPi 10
+## Examples
 
-## license
+### SparkPi Example
+
+After running single-master or highly available version you can run spark examples.
+
+```bash
+docker-compose exec m1 bin/run-example SparkPi 100
+```
+
+### PySpark Example
+
+You can submit PySpark jobs via master.
+
+```bash
+docker-compose exec m1 bash -c 'echo -e "import pyspark\n\nprint(pyspark.SparkContext().parallelize(range(0, 10)).count())" > /tmp/count.py'
+docker-compose exec m1 bin/spark-submit /tmp/count.py
+```
+
+### Submitting jobs from other machines
+
+You need to consider following items if you want to run jobs from another machine.
+
+- When using multiple workers, you need to run and expose different ports for driver. (or bind them to different IP addresses)
+- You should set DNS settings on job-submitting machine according to your `docker-compose.yml`. (e.g. `/etc/hosts`)
+- You should set `SPARK_PUBLIC_DNS` and `SPARK_LOCAL_HOSTNAME` environment variables according to your DNS settings.
+- You cannot use IP address instead of DNS, since container IP adresses and exposed IP addresses are different.
+- An example: `job-submit.sh`
+
+## Build
+
+You can build your custom images according to your Spark and Hadoop version requirements by just changing the `SPARK_VERSION` and `HADOOP_VERSION` environment variables and `docker build -t your-custom-spark .` command.
+
+## License
 
 MIT
+
+Extended from [gettyimages/docker-spark](https://github.com/gettyimages/docker-spark.git)
