@@ -3,7 +3,7 @@ services:
 
   m1:
     build: ./
-    image: dcagatay/docker-spark:2.4.7-hadoop3.2.2
+    image: dcagatay/docker-spark:latest
     hostname: m1
     environment:
       SPARK_PUBLIC_DNS: "m1"
@@ -22,7 +22,7 @@ services:
     #   - ./conf/master:/conf
 
   w1:
-    image: dcagatay/docker-spark:2.4.7-hadoop3.2.2
+    image: dcagatay/docker-spark:latest
     hostname: w1
     depends_on:
       - m1
@@ -41,7 +41,7 @@ services:
     #   - ./conf/worker:/conf
 
   w2:
-    image: dcagatay/docker-spark:2.4.7-hadoop3.2.2
+    image: dcagatay/docker-spark:latest
     hostname: w2
     depends_on:
       - m1

@@ -15,7 +15,7 @@ docker run --rm -it \
     --add-host="w1:192.168.1.69" \
     --add-host="w2:192.168.1.69" \
     -v "$(pwd)/job/count.py:/count.py" \
-    dcagatay/docker-spark:2.4.7-hadoop3.2.2 \
+    dcagatay/docker-spark:latest \
     bin/spark-submit --master spark://m1:7077 /count.py
 
 rm -rf count.py

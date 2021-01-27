@@ -13,7 +13,7 @@ services:
       - 2181:2181
 
   m1:
-    image: dcagatay/docker-spark:2.4.7-hadoop3.2.2
+    image: dcagatay/docker-spark:latest
     hostname: m1
     depends_on:
       - zk
@@ -36,7 +36,7 @@ services:
     #   - ./data:/tmp/data
 
   m2:
-    image: dcagatay/docker-spark:2.4.7-hadoop3.2.2
+    image: dcagatay/docker-spark:latest
     hostname: m2
     depends_on:
       - zk
@@ -53,7 +53,7 @@ services:
       - 8090:8080
 
   m3:
-    image: dcagatay/docker-spark:2.4.7-hadoop3.2.2
+    image: dcagatay/docker-spark:latest
     hostname: m3
     depends_on:
       - zk
@@ -70,7 +70,7 @@ services:
       - 8100:8080
 
   w1:
-    image: dcagatay/docker-spark:2.4.7-hadoop3.2.2
+    image: dcagatay/docker-spark:latest
     hostname: w2
     depends_on:
       - m1
@@ -91,7 +91,7 @@ services:
       - 8081:8081
 
   w2:
-    image: dcagatay/docker-spark:2.4.7-hadoop3.2.2
+    image: dcagatay/docker-spark:latest
     hostname: w2
     depends_on:
       - m1

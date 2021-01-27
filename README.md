@@ -4,7 +4,8 @@ A `debian:stretch` based [Spark](http://spark.apache.org) container. Use it in a
 
 ## Labels
 
-- `latest`, `2.4.7-hadoop3.2.2`
+- `latest`, `3.0.1-hadoop3.2.2`
+- `2.4.7-hadoop3.2.2`
 
 ## Highlights
 
