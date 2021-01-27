@@ -1,10 +1,10 @@
-# Apache Spark
+# dcagatay/spark
 
 A `debian:stretch` based [Spark](http://spark.apache.org) container. Use it in a standalone cluster with the accompanying `docker-compose.yml`, or as a base for more complex recipes.
 
 ## Labels
 
-- `latest`, `dcagatay/docker-spark:2.4.7-hadoop3.2.2`
+- `latest`, `2.4.7-hadoop3.2.2`
 
 ## Highlights
 
