@@ -1,4 +1,4 @@
-FROM debian:stretch
+FROM debian:buster
 LABEL maintainer "Dogukan Cagatay <dcagatay@gmail.com>"
 
 RUN apt-get update \
@@ -19,7 +19,7 @@ ENV LC_ALL en_US.UTF-8
 RUN apt-get update && apt-get install -y \
   curl \
   unzip \
-  openjdk-8-jre \
+  openjdk-11-jre-headless \
   python3 \
   python3-pip \
   && ln -s /usr/bin/python3 /usr/bin/python \
@@ -33,7 +33,7 @@ ENV PYTHONIOENCODING UTF-8
 ENV PIP_DISABLE_PIP_VERSION_CHECK 1
 
 # HADOOP
-ENV HADOOP_VERSION 3.2.2
+ENV HADOOP_VERSION 3.3.0
 ENV HADOOP_HOME /usr/hadoop-$HADOOP_VERSION
 ENV HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
 ENV PATH $PATH:${HADOOP_HOME}/bin

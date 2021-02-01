@@ -1,8 +1,9 @@
-version: "2.2"
+version: "3"
 services:
 
   zk:
     image: zookeeper:3.6.2
+    hostname: zk
     environment:
       ZOO_MY_ID: "1"
       ZOO_SERVERS: "server.1=0.0.0.0:2888:3888;2181"
