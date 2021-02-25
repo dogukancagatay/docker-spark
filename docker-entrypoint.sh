@@ -6,6 +6,9 @@ if [ ! -z ${ZK_HOSTS+x} ]; then
     export SPARK_DAEMON_JAVA_OPTS="$SPARK_DAEMON_JAVA_OPTS -Dspark.deploy.recoveryMode=ZOOKEEPER -Dspark.deploy.zookeeper.url=$ZK_HOSTS"
 fi
 
+# Populate SPARK_DIST_CLASSPATH
+export SPARK_DIST_CLASSPATH="$(hadoop classpath)"
+
 # Populate configuration folder with templates
 mkdir -p $SPARK_CONF_DIR
 cp ${SPARK_HOME}/conf/*.template $SPARK_CONF_DIR/
