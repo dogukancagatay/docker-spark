@@ -1,10 +1,6 @@
 FROM openjdk:8u282-jdk-buster
 LABEL maintainer="Doğukan Çağatay <dcagatay@gmail.com>"
 
-ARG HADOOP_VERSION_ARG="3.3.0"
-ARG SPARK_VERSION_ARG="3.0.2"
-ARG SPARK_PACKAGE_SPEC
-
 RUN apt-get update \
   && apt-get install -y locales \
   && dpkg-reconfigure -f noninteractive locales \
@@ -35,6 +31,7 @@ ENV PYTHONIOENCODING UTF-8
 ENV PIP_DISABLE_PIP_VERSION_CHECK 1
 
 # Hadoop
+ARG HADOOP_VERSION_ARG="3.3.0"
 ENV HADOOP_VERSION ${HADOOP_VERSION_ARG}
 ENV HADOOP_URL "https://archive.apache.org/dist/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz"
 ENV HADOOP_HOME /opt/hadoop
@@ -54,6 +51,8 @@ RUN set -x \
   && chown -R root:root ${HADOOP_HOME}
 
 # Spark
+ARG SPARK_VERSION_ARG="3.0.2"
+ARG SPARK_PACKAGE_SPEC
 ENV SPARK_VERSION ${SPARK_VERSION_ARG}
 ENV SPARK_PACKAGE spark-${SPARK_VERSION}-bin-without-hadoop${SPARK_PACKAGE_SPEC}
 ENV SPARK_URL "https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/${SPARK_PACKAGE}.tgz"
