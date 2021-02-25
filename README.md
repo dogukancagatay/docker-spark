@@ -11,6 +11,7 @@ A `debian:buster` based [Spark](http://spark.apache.org) container. Use it in a 
 - `2.4.7-hadoop2.10.2`
 - `2.4.7-hadoop3.1.4`
 - `2.4.7-hadoop3.2.2`
+- `2.4.7-hadoop3.2.2-scala2.12`
 - `2.4.7-hadoop3.3.0`
 
 You can find the all tags at [Docker Hub](https://hub.docker.com/r/dcagatay/spark).
